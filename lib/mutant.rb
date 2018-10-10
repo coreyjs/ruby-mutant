@@ -1,6 +1,5 @@
 require "ruby-mutant/version"
+require "ruby-mutant/mutant_base"
 
-module RubyMutant
-    module Mutations
-    end
+module Mutant
 end

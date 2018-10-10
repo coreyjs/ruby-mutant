@@ -5,7 +5,7 @@ require "ruby-mutant/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "ruby-mutant"
-  spec.version       = RubyMutant::VERSION
+  spec.version       = Mutant::VERSION
   spec.authors       = ["Corey Schaf"]
   spec.email         = ["cschaf@gmail.com"]
 
@@ -20,8 +20,8 @@ Gem::Specification.new do |spec|
     spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
     spec.metadata["homepage_uri"] = spec.homepage
-    spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-    spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+    spec.metadata["source_code_uri"] = "https://github.com/corey-rb/ruby-mutant"
+    spec.metadata["changelog_uri"] = "https://github.com/corey-rb/ruby-mutant"
   else
     raise "RubyGems 2.0 or newer is required to protect against " \
       "public gem pushes."

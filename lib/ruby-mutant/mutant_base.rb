@@ -1,3 +1,4 @@
-module RubyMutant
-    
+module Mutant
+    class MutantBase
+    end
 end
