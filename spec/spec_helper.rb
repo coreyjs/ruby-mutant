@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "ruby/mutant"
+require "ruby-mutant"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

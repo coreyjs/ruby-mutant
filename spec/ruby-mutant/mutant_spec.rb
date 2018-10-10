@@ -1,6 +1,8 @@
-RSpec.describe Ruby::Mutant do
+require 'spec_helper'
+
+RSpec.describe RubyMutant do
   it "has a version number" do
-    expect(Ruby::Mutant::VERSION).not_to be nil
+    expect(RubyMutant::VERSION).not_to be nil
   end
 
   it "does something useful" do
