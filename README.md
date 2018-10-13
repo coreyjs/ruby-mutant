@@ -24,6 +24,38 @@ Or install it yourself as:
 
 Ruby Mutant is a lightweight mutations library to help you encapsulate your business logic.  With Ruby Mutant you can easily add executable code with validation, helping you decouple important logic from your application.
 
+To create a mutation, subclass `MutatantBase`  
+
+```ruby
+class ProductCreatedMutation < Base
+
+    #Define required attributes for this mutation to execute
+    required do
+        {
+            name: String, 
+            address: String, 
+            product: Product,
+            name: String
+        }
+    end
+
+    #Define custom validators for our attributes
+    def validate_name?
+        true
+    end
+
+    # Requried, this will execute our new mutation.
+    def self.run(product)
+        super
+        
+        # Put all our mutation logic here!
+        self.product.on_sale = true
+
+        @output
+    end
+end
+```
+
 
 
 ## Contributing
