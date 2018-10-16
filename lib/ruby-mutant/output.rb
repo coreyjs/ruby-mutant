@@ -1,11 +1,11 @@
 class Output
     attr_reader :success, :errors
     def initialize(success, errors)
-        @@success = success
+        @success = success
         @errors = errors
     end
 
     def success?
-        @@success
+        @success
     end
 end
