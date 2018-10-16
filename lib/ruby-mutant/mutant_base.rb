@@ -17,7 +17,6 @@ module Mutant
         end
 
         def self.set_attributes(param_type, &block)
-        # puts "self.set_attributes #{param_type}"
             fields = yield block
             self.props
             fields.each do |k, klass|
