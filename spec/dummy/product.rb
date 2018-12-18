@@ -1,6 +1,5 @@
 require 'mutant'
 
-puts 'hello world'
 
 class MutationDuplicateAttrException < StandardError
     attr_reader :dup
@@ -38,7 +37,8 @@ end
 
 class Base
     
-    attr_reader :output, :raise_on_error, :props, :errors
+    attr_reader :output, :raise_on_error, :props, :errors, :validate_methods
+    attr_writer :errors
 
     def self.success?
         @errors == nil || @error.length == 0
@@ -46,11 +46,9 @@ class Base
 
     def self.run(**args)
         puts 'base.run'
-        ##puts @props
-        #puts args.inspect
-        #puts args.class
 
         args['_mutation_props_required'] = @props
+        args['_mutation_validate_methods'] = @validate_methods
         #puts args
 
         @output = new(args).run
@@ -71,6 +69,7 @@ class Base
         end
     end
 
+
     def self.props
         @props ||= begin
             if Base == self.superclass
@@ -81,17 +80,34 @@ class Base
         end
     end
 
+    def self.validate_methods
+        @validate_methods ||= begin
+            if Base == self.superclass
+                []
+            else
+                self.superclass.validate_methods.dup
+            end
+        end
+    end
+
+    def errors
+        @errors ||= begin
+            if Base == self.superclass
+                []
+            else
+                self.superclass.errors.dup
+            end
+        end
+    end
+
     def self.validate(&block)
+        puts 'self.validate (&block)'
         methods = yield block
+        self.validate_methods
         methods.each do |m|
             begin
-                #if self.superclass == Base
-                
-                puts singleton_methods
-                #self.class.define_singleton_method(:validate_product_name) do end
-               # result = singleton_class.send(:validate_product_name)
-               # end
-            
+                self.class.define_method(m.to_sym) do end
+                self.validate_methods << m            
             rescue NoMethodError => e
                 puts ("NoMethod Error - #{m} - Class: #{self.singleton_class}")
                 if @raise_on_error
@@ -101,22 +117,24 @@ class Base
         end
     end
 
-    def self.test
-        puts 'self.test'
-    end
-
     def self.required(&block)
+        puts 'self.required (&block)'
         self.set_attributes('required', &block)
     end
 
     def self.optional(*block)
         #TODO Add to props
         # check for dups, throw mutation error
+        puts 'self.required (&block)'
     end
 
     def initialize(args)
+        puts 'initialize'
         required_args = args['_mutation_props_required'].dup
         args.delete('_mutation_props_required')
+        validator_methods = args['_mutation_validate_methods'].dup
+        args.delete('_mutation_validate_methods')
+        
         required_args.each do |k, v|
             present = args.key?(k)       
             if !present
@@ -131,6 +149,17 @@ class Base
                 if raise_on_error
                     raise MutationValidationError.new(msg='Property does not match its type', validator=v)
                 end
+            end
+        end
+
+        puts "validator args: #{validator_methods}"
+        self.errors = []
+        validator_methods.each do |vm|
+            puts "initialize validator_methods: #{vm}"
+            begin
+                self.send(vm.to_sym)
+            rescue => e
+                @errors << e
             end
         end
 
@@ -161,9 +190,17 @@ class ProductCreatedMutation < Base
         {
             name: String, 
             address: String, 
-            product: Product,
-            name: String
+            product: Product
         }
+    end
+
+    validate do 
+        [:validate_name?]
+    end
+
+    def validate_name?
+        puts 'I AM VALIDATE NAME'
+        return name
     end
 
     # execute out mutation code that is
