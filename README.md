@@ -27,7 +27,7 @@ Ruby Mutant is a lightweight mutations library to help you encapsulate your busi
 To create a mutation, subclass `MutatantBase`  
 
 ```ruby
-class ProductCreatedMutation < Base
+class ProductCreatedMutation < MutantBase
 
     #Define required attributes for this mutation to execute
     required do
@@ -37,6 +37,10 @@ class ProductCreatedMutation < Base
             product: Product,
             name: String
         }
+    end
+    
+    validate do 
+        [:validate_name?]
     end
 
     #Define custom validators for our attributes
