@@ -1,11 +1,24 @@
+require "mutant"
 
+class ProductCreatedEmptyMutation < Mutant::MutantBase
+end
 
-RSpec.describe RubyMutant do
-  it "has a version number" do
-    expect(RubyMutant::VERSION).not_to be nil
+class ProductCreatedMutation < Mutant::MutantBase
+
+end
+
+RSpec.describe Mutant do
+  before do
+    
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it "has a version number" do
+    expect(Mutant::VERSION).not_to be nil
+  end
+
+  it "should pass successfully with no data" do
+    output = ProductCreatedEmptyMutation.run()
+    expect(output).to_not be_nil
+    expect(output.success?).to eq(true)
   end
 end

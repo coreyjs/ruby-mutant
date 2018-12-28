@@ -1,6 +1,7 @@
-require 'ruby-mutant/mutation_duplication_exception'
-require 'ruby-mutant/mutation_prop_undefined'
-require 'ruby-mutant/mutation_validation_exception'
+require 'ruby-mutant/exceptions/mutation_duplicate_attr_exception'
+require 'ruby-mutant/exceptions/mutation_prop_undefined'
+require 'ruby-mutant/exceptions/mutation_validation_exception'
+require 'ruby-mutant/mutant_output'
 
 module Mutant
     class MutantBase
@@ -12,8 +13,8 @@ module Mutant
         end
 
         def self.run(**args)
-            args['_mutation_props_required'] = @props
-            args['_mutation_validate_methods'] = @validate_methods
+            args['_mutation_props_required'] = @props ? @props : {}
+            args['_mutation_validate_methods'] = @validate_methods ? @validate_methods : []
 
             @output = new(args).run
         end
@@ -107,7 +108,7 @@ module Mutant
             args.each do |k, v|
                 if !v.class == required_args[k]
                     if raise_on_error
-                        raise MutationValidationError.new(msg='Property does not match its type', validator=v)
+                        raise MutationValidationException.new(msg='Property does not match its type', validator=v)
                     end
                 end
             end
@@ -123,7 +124,7 @@ module Mutant
                 end
             end
     
-            @output = Output.new(success?, @errors)
+            @output = MutantOutput.new(success?, @errors)
         end
 
         def run
@@ -133,7 +134,7 @@ module Mutant
 
         protected
         def success?
-            !@errors
+            !@errors || @errors.length == 0
         end
     end
 end

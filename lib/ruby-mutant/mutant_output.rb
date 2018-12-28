@@ -1,4 +1,4 @@
-class Output
+class MutantOutput
     attr_reader :success, :errors
     def initialize(success, errors)
         @success = success
