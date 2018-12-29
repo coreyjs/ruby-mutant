@@ -66,3 +66,10 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/coreyj
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 
+## Special thanks to the inspiration for this library!
+
+https://github.com/cypriss/mutations
+
+https://github.com/omarish/mutations
+
+
