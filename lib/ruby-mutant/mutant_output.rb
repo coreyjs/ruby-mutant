@@ -1,5 +1,7 @@
 class MutantOutput
-    attr_reader :success, :errors
+    attr_reader :success, :errors, :payload
+    attr_writer :payload
+    
     def initialize(success, errors)
         @success = success
         @errors = errors

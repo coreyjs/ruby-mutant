@@ -23,7 +23,6 @@ module Mutant
             fields = yield block
             self.props
             fields.each do |k, klass|
-                #puts k, klass
                 if @props.key?(k)
                     raise MutationDuplicateAttrException.new(
                         msg='Mutation has recieved duplicate required attributes.', dup=k)
@@ -104,10 +103,11 @@ module Mutant
     
             # Validate all input args against their required class/type defination
             args.each do |k, v|
-                if !v.class == required_args[k]
-                    if raise_on_error
-                        raise MutationValidationException.new(msg='Property does not match its type', validator=v)
-                    end
+               if !(v.class == required_args[k])
+                    puts '1'
+                    #if raise_on_error
+                    raise MutationValidationException.new(msg='Property does not match its type', validator=v)
+                    #end
                 end
             end
 
