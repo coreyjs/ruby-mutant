@@ -18,6 +18,8 @@ Ruby Mutant is a lightweight mutations library to help you encapsulate your busi
 To create a mutation, subclass `MutatantBase`  
 
 ```ruby
+require "mutant"
+
 class ProductCreatedMutation < MutantBase
 
     #Define required attributes for this mutation to execute
