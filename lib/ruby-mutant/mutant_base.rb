@@ -64,7 +64,6 @@ module Mutant
         end
 
         def self.validate(&block)
-            puts 'self.validate (&block)'
             methods = yield block
             self.validate_methods
             methods.each do |m|
@@ -90,7 +89,6 @@ module Mutant
         end
 
         def initialize(args)
-            puts 'initialize'
             required_args = args['_mutation_props_required'].dup
             args.delete('_mutation_props_required')
             validator_methods = args['_mutation_validate_methods'].dup
@@ -112,11 +110,9 @@ module Mutant
                     end
                 end
             end
-    
-            puts "validator args: #{validator_methods}"
+
             self.errors = []
             validator_methods.each do |vm|
-                puts "initialize validator_methods: #{vm}"
                 begin
                     self.send(vm.to_sym)
                 rescue => e
