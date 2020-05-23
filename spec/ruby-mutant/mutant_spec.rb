@@ -1,9 +1,9 @@
 require "mutant"
 
-class ProductCreatedEmptyMutation < Mutant::MutantBase
+class ProductCreatedEmptyMutation < Mutant::Base
 end
 
-class ProductCreatedMutation < Mutant::MutantBase
+class ProductCreatedMutation < Mutant::Base
   required do 
     {
       name: String,

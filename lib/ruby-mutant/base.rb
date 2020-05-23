@@ -1,10 +1,10 @@
 require 'ruby-mutant/exceptions/mutation_duplicate_attr_exception'
 require 'ruby-mutant/exceptions/mutation_prop_undefined'
 require 'ruby-mutant/exceptions/mutation_validation_exception'
-require 'ruby-mutant/mutant_output'
+require 'ruby-mutant/output'
 
 module Mutant
-    class MutantBase
+    class Base
         attr_reader :output, :raise_on_error, :props, :errors
         attr_writer :errors
 
@@ -34,7 +34,7 @@ module Mutant
 
         def self.props
             @props ||= begin
-                if MutantBase == self.superclass
+                if Base == self.superclass
                     {}
                 else
                     self.superclass.props.dup
@@ -120,7 +120,7 @@ module Mutant
                 end
             end
     
-            @output = MutantOutput.new(success?, @errors)
+            @output = Output.new(success?, @errors)
         end
 
         def run

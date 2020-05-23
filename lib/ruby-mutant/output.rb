@@ -1,4 +1,4 @@
-class MutantOutput
+class Output
     attr_reader :success, :errors, :payload
     attr_writer :payload
     
