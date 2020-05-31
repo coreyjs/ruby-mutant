@@ -1,16 +1,27 @@
-require 'ruby-mutant/base'
+require_relative './base'
 
-class RecipeCreatedMutation < Mutant::Base
+class RecipeCreatedMutation
+  include Mutant
 
-  name = 'a'
+  attr_accessor :name, :recipe, :max_difficulty
 
-  required do
-    {
-        name: String,
-        address: String,
-        product: Product
-    }
-  end
+  @name = 'inside class defined'
+
+  # @@name = 'a'
+  # @@recipe
+  # @@max_difficulty
+
+  # def initialize(*args)
+  #   puts 'class init'
+  # end
+
+  # required do
+  #   {
+  #       name: String,
+  #       address: String,
+  #       product: Product
+  #   }
+  # end
 
 
   def validate_name?
@@ -22,7 +33,8 @@ class RecipeCreatedMutation < Mutant::Base
   # specific to RecipeCreatedMutation
   def execute(*args)
     puts 'running mutation business logic'
-
+    puts "name = #{name}"
+    puts "The Recipe is #{recipe&.name}"
 
     # Do other logic
 
