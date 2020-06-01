@@ -15,26 +15,14 @@ gem 'ruby-mutant'
 
 Ruby Mutant is a lightweight mutations library to help you encapsulate your business logic.  With Ruby Mutant you can easily add executable code with validation, helping you decouple important logic from your application.
 
-To create a mutation, subclass `MutatantBase`  
+To create a mutation from a ruby object, include the module `include Mutatant`  
+
 
 ```ruby
 require "mutant"
 
-class ProductCreatedMutation < MutantBase
-
-    #Define required attributes for this mutation to execute
-    required do
-        {
-            name: String, 
-            address: String, 
-            product: Product,
-            name: String
-        }
-    end
-    
-    validate do 
-        [:validate_name?]
-    end
+class RecipeCreatedMutation
+  include Mutant
 
     #Define custom validators for our attributes
     def validate_name?
@@ -42,8 +30,7 @@ class ProductCreatedMutation < MutantBase
     end
 
     # Requried, this will execute our new mutation.
-    def self.run(*args)
-        super
+    def execute(args)
         input = args[0].to_h
         
         # Put all our mutation logic here!
@@ -53,6 +40,42 @@ class ProductCreatedMutation < MutantBase
         @output
     end
 end
+```
+
+---
+To run a mutation definition:
+```ruby
+# run() excepts any number of parameters that you want to pass into your mutation
+output = RecipeCreatedMutation.run(obj: obj1, obj2: obj2, ....)
+```
+
+Every mutation execution will return an `output` object.  This object contains information on the
+mutation execution, and errors occurred or any metadata that's needed to be returned from the mutation, 
+in the form of a hash.
+
+Any meta data that needs to be returned can be added to the output object using the
+helper method inside your mutation:
+
+```ruby
+class RecipeCreatedMutation
+  include Mutant
+...
+    def execute(args)
+      output.add_meta(:test, 'value')
+    end
+
+...
+
+output = RecipeCreatedMutation.run()
+output.meta[:test] # >> 'value'
+
+```
+
+```ruby
+output = RecipeCreatedMutation.run(obj: obj1)
+output.success?
+output.errors
+output.meta
 ```
 
 

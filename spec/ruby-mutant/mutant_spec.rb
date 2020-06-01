@@ -16,7 +16,7 @@ class RecipeCreatedMutation
   attr_accessor :first, :second
 
   def execute(*args)
-    @output.add_meta(:test, 'value')
+    output.add_meta(:test, 'value')
   end
 end
 
