@@ -5,11 +5,8 @@ class RecipeCreatedMutation
 
   attr_accessor :name, :recipe, :max_difficulty
 
-  @name = 'inside class defined'
+  name = 'inside class defined'
 
-  # @@name = 'a'
-  # @@recipe
-  # @@max_difficulty
 
   # def initialize(*args)
   #   puts 'class init'

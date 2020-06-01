@@ -21,18 +21,20 @@ module Mutant
 
       # set the vars to the obj dynamically
       args.each do |k, v|
-
         puts "Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
 
+        # First make sure this mutation obj has the correct vars,
+        # if not, then proceeed to create them
         unless obj.respond_to? k.to_sym
           puts 'Mutant: object does not have attribute'
+          obj.instance_variable_set("@#{k.to_sym}", v)
+          byebug
+          puts "FINAL Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
         end
-        # First make sure this mutation obj has the correct vars,
-        # if not create them
 
       end
 
-        #obj.execute(args)
+        obj.execute(args)
     end
   end
 
