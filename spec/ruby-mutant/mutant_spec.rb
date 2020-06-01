@@ -31,33 +31,35 @@ RSpec.describe Mutant do
     end
   end
 
-  describe "A mutatation - " do
-    context "is a valid mutation -" do
+  describe "An empty mutation" do
+    let(:output) { RecipeCreatedEmptyMutation.run() }
+
+    context "can still execute with no data" do
       it "should pass successfully with no data and return an output object" do
-        output = RecipeCreatedEmptyMutation.run()
         expect(output).to_not be_nil
         expect(output.success?).to eq(true)
       end
+    end
+  end
 
+  describe "A mutatation - " do
+    let(:output) {RecipeCreatedMutation.run() }
+
+    context "is a valid mutation -" do
       it "should set the values of the class mutation based on the props supplied to run()" do
-        output = RecipeCreatedMutation.run()
         expect(output).to_not be_nil
         expect(output.meta).to_not be_nil
         expect(output.meta[:test]).to eq 'value'
       end
 
       it "should throws error if raise_on_error is true, or not set" do
-
       end
 
       it "should create accessors for properties defined in run() that are missing on class definition" do
-
       end
 
       it "should not throw error if raise_on_error is false" do
-
       end
-
     end
 
     context "an invalid mutation" do
@@ -69,7 +71,10 @@ RSpec.describe Mutant do
         #expect { raise ProductCreatedMutation.run() }.to raise_error(MutationPropUndefined)
       end
     end
+  end
 
+  describe "A mutation with input parameters" do
+    let(:output) { RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
   end
 
   # it "should pass if all required properties are present" do
