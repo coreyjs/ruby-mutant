@@ -1,9 +1,9 @@
 module Mutant
     class Output
-        attr_reader :success, :errors
-        attr_accessor :meta
+        attr_reader :success
+        attr_accessor :meta, :errors
 
-        def initialize(success=true, errors={}, meta={})
+        def initialize(success=true, errors=[], meta={})
             @success = success
             @errors = errors
             @meta = meta

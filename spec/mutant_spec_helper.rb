@@ -7,7 +7,7 @@ module MutantHelpers
 
   class RecipeCreatedEmptyMutation
     include Mutant
-    def execute(*args)
+    def execute(args)
 
     end
   end
@@ -16,8 +16,26 @@ module MutantHelpers
     include Mutant
     attr_accessor :first, :second
 
-    def execute(*args)
+    def validate_true?
+      true
+    end
+
+    def execute(args)
       output.add_meta(:test, 'value')
     end
   end
+
+    class RecipeInvalidMutation
+      include Mutant
+      attr_accessor :first, :second
+
+      def validate_true?
+        'abc' == 'xyz'
+      end
+
+      def execute(args)
+        output.add_meta(:test, 'value')
+      end
+    end
+
 end

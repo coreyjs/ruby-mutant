@@ -1,19 +1,13 @@
 #require_relative './base'
 require "bundler/setup"
 require_relative "../../lib/mutant"
+require 'byebug'
 
 class RecipeCreatedMutation
   include Mutant
 
   attr_accessor :name, :recipe, :max_difficulty
 
-  # required do
-  #   {
-  #       name: String,
-  #       address: String,
-  #       product: Product
-  #   }
-  # end
 
   def validate_name?
     puts 'I AM VALIDATE NAME'
@@ -30,4 +24,9 @@ class RecipeCreatedMutation
     # Do other logic
 
   end
+
+  # def validate
+  #   puts 'hello'
+  #   byebug
+  # end
 end

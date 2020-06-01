@@ -3,6 +3,7 @@ require 'ruby-mutant/exceptions/mutation_prop_undefined'
 require 'ruby-mutant/exceptions/mutation_validation_exception'
 require 'ruby-mutant/exceptions/mutation_setup_exception'
 require 'ruby-mutant/output'
+require "bundler/setup"
 
 
 module Mutant
@@ -17,9 +18,10 @@ module Mutant
         # mutation logic
         def run(args = {})
             errors = []
-            unless args[:raise_on_error]
+            unless args.has_key?(:raise_on_error)
                 args[:raise_on_error] = true
             end
+            args[:raise_on_error].freeze
 
             puts 'Mutant::self.run(*args) '
             obj = new(args)
@@ -30,7 +32,13 @@ module Mutant
             end
 
             # 1. We want to run the validators first, then determine if we should continue
-            obj.send(:validate)
+            errs = obj.send(:validate)
+            obj.output.errors = obj.output.errors + errs
+            if errs.length > 0
+                if args[:raise_on_error]
+                    raise MutationSetupException.new(msg='Validation failed')
+                end
+            end
 
             # 2. Check to see the mutation has the corresponding inst vars
             args.each do |k, val|
@@ -66,13 +74,27 @@ module Mutant
         @output = Output.new
     end
 
-    # def execute
-    #     raise '.execute(*args) method is not defined'
-    # end
-
     private
+    # validate
+    # This will run all ou validation functions on our mutation class
+    #
+    # This will return an array of MutationValidationException, to the class method, run()
     def validate
         puts 'Mutant::validate'
+        errors = []
+        self.public_methods.each do |m|
+            #byebug
+            if m.to_s.start_with?('validate_') && m.to_s.end_with?('?')
+                #execute method
+                res = self.send(m)
+
+                # unless the response is truthy
+                unless res
+                    errors << MutationValidationException.new(msg='Validator has returned false', validator=m)
+                end
+            end
+        end
+        errors
     end
 
 end

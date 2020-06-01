@@ -27,8 +27,16 @@ RSpec.describe Mutant do
     end
   end
 
-  describe "A mutatation - " do
-    let(:output) {MutantHelpers::RecipeCreatedMutation.run() }
+  describe "a mutation" do
+    context "with raise_on_error=true" do
+      it "should throws error if raise_on_error is true, or not set" do
+        expect { raise MutantHelpers::RecipeInvalidMutation.run(raise_on_error: true) }.to raise_error(MutationSetupException)
+      end
+    end
+  end
+
+  describe "A mutatation with raise_on_error=false" do
+    let(:output) {MutantHelpers::RecipeCreatedMutation.run(raise_on_error: false) }
 
     context "is a valid mutation -" do
       it "should set the values of the class mutation based on the props supplied to run()" do
@@ -37,13 +45,15 @@ RSpec.describe Mutant do
         expect(output.meta[:test]).to eq 'value'
       end
 
-      it "should throws error if raise_on_error is true, or not set" do
-      end
-
       it "should create accessors for properties defined in run() that are missing on class definition" do
       end
 
       it "should not throw error if raise_on_error is false" do
+        expect { raise MutantHelpers::RecipeInvalidMutation.run(raise_on_error: false) }.to_not raise_error(MutationSetupException)
+      end
+
+      it "should execute validators and ensure they all return truthy" do
+        expect(output.errors.length).to eq 0
       end
     end
 
