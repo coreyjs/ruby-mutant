@@ -3,134 +3,64 @@ require 'ruby-mutant/exceptions/mutation_prop_undefined'
 require 'ruby-mutant/exceptions/mutation_validation_exception'
 require 'ruby-mutant/output'
 
+
 module Mutant
-    class Base
-        attr_reader :output, :raise_on_error, :props, :errors
-        attr_writer :errors
+    def self.included(klass)
+        puts "included #{klass}"
+        klass.extend(ClassMethods)
+    end
 
-        def self.success?
-            @errors == nil || @error.length == 0
-        end
-
-        def self.run(**args)
-            args['_mutation_props_required'] = @props ? @props : {}
-            args['_mutation_validate_methods'] = @validate_methods ? @validate_methods : []
-
-            @output = new(args).run
-        end
-
-        def self.set_attributes(param_type, &block)
-            fields = yield block
-            self.props
-            fields.each do |k, klass|
-                if @props.key?(k)
-                    raise MutationDuplicateAttrException.new(
-                        msg='Mutation has recieved duplicate required attributes.', dup=k)
-                else
-                    @props[k] = klass
-                end           
+    module ClassMethods
+        # run - The entry point, main method that will be execute any
+        # mutation logic
+        def run(args)
+            unless args[:raise_on_error]
+                args[:raise_on_error] = true
             end
-        end
 
-        def self.props
-            @props ||= begin
-                if Base == self.superclass
-                    {}
-                else
-                    self.superclass.props.dup
-                end
-            end
-        end
+            puts 'Mutant::self.run(*args) '
+            obj = new(args)
 
-        def self.validate_methods
-            @validate_methods ||= begin
-                if MutantBase == self.superclass
-                    []
-                else
-                    self.superclass.validate_methods.dup
-                end
-            end
-        end
-    
-        def errors
-            @errors ||= begin
-                if MutantBase == self.superclass
-                    []
-                else
-                    self.superclass.errors.dup
-                end
-            end
-        end
+            # 1. We want to run the validators first, then determine if we should continue
+            obj.send(:validate)
 
-        def self.validate(&block)
-            methods = yield block
-            self.validate_methods
-            methods.each do |m|
-                begin
-                    self.class.define_method(m.to_sym) do end
-                    self.validate_methods << m            
-                rescue NoMethodError => e
-                    puts ("NoMethod Error - #{m} - Class: #{self.singleton_class}")
-                    if @raise_on_error
-                        # Todo: Raise missing validator exception
+            # 2. Check to see the mutation has the corresponding inst vars
+            args.each do |k, val|
+                puts "Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
+
+                # First make sure this mutation obj has the correct vars,
+                # if not, then proceeed to create them
+                unless obj.respond_to? k.to_sym
+                    puts 'Mutant: object does not have attribute'
+                    # create the attr_accessor for the missing vars
+                    obj.class.send(:define_method, "#{k}=".to_sym) do |value|
+                        instance_variable_set("@" + k.to_s, value)
                     end
+                    obj.class.send(:define_method, k.to_sym) do
+                        instance_variable_get("@" + k.to_s)
+                    end
+                    puts "FINAL Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
                 end
-            end
-        end
 
-        def self.required(&block)
-            self.set_attributes('required', &block)
-        end
-
-        def self.optional(*block)
-            #TODO Add to props
-            # check for dups, throw mutation error
-        end
-
-        def initialize(args)
-            required_args = args['_mutation_props_required'].dup
-            args.delete('_mutation_props_required')
-            validator_methods = args['_mutation_validate_methods'].dup
-            args.delete('_mutation_validate_methods')
-            
-            required_args.each do |k, v|
-                present = args.key?(k)       
-                if !present
-                     raise MutationPropUndefined.new(
-                        msg='Undefined prop.  Not found in required or optional params', p)
-                end
-            end
-    
-            # Validate all input args against their required class/type defination
-            args.each do |k, v|
-               if !(v.class == required_args[k])
-                    puts '1'
-                    #if raise_on_error
-                    raise MutationValidationException.new(msg='Property does not match its type', validator=v)
-                    #end
-                end
+                # 3. Propagate the values from the mutation props to the class
+                obj.send("#{k}=".to_sym, val)
             end
 
-            self.errors = []
-            validator_methods.each do |vm|
-                begin
-                    self.send(vm.to_sym)
-                rescue => e
-                    @errors << e
-                end
-            end
-    
-            @output = Output.new(success?, @errors)
-        end
-
-        def run
-            @output
-        end
-
-
-        protected
-        def success?
-            !@errors || @errors.length == 0
+            obj.execute(args)
         end
     end
+
+    def initialize(*args)
+        puts 'Mutant::initialize'
+    end
+
+    def execute
+        raise '.execute(*args) method is not defined'
+    end
+
+    private
+    def validate
+        puts 'Mutant::validate'
+    end
+
 end

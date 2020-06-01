@@ -12,6 +12,10 @@ module Mutant
     # run - The entry point, main method that will be execute any
     # mutation logic
     def run(args)
+      unless args[:raise_on_error]
+        args[:raise_on_error] = true
+      end
+
       puts 'Mutant::self.run(*args) '
       obj = new(args)
 
