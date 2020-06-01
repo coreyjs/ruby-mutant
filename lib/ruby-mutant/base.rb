@@ -1,25 +1,33 @@
 require 'ruby-mutant/exceptions/mutation_duplicate_attr_exception'
 require 'ruby-mutant/exceptions/mutation_prop_undefined'
 require 'ruby-mutant/exceptions/mutation_validation_exception'
+require 'ruby-mutant/exceptions/mutation_setup_exception'
 require 'ruby-mutant/output'
 
 
 module Mutant
+    attr_accessor :output
+
     def self.included(klass)
-        puts "included #{klass}"
         klass.extend(ClassMethods)
     end
 
     module ClassMethods
         # run - The entry point, main method that will be execute any
         # mutation logic
-        def run(args)
+        def run(args = {})
+            errors = []
             unless args[:raise_on_error]
                 args[:raise_on_error] = true
             end
 
             puts 'Mutant::self.run(*args) '
             obj = new(args)
+
+            # Ensure the mutation has the correct method
+            unless obj.respond_to?(:execute)
+                raise MutationSetupException.new(msg='Missing execute method')
+            end
 
             # 1. We want to run the validators first, then determine if we should continue
             obj.send(:validate)
@@ -47,16 +55,20 @@ module Mutant
             end
 
             obj.execute(args)
+
+            # Return out Output obj, with all meta data regarding the ran mutation
+            obj.output
         end
     end
 
     def initialize(*args)
         puts 'Mutant::initialize'
+        @output = Output.new
     end
 
-    def execute
-        raise '.execute(*args) method is not defined'
-    end
+    # def execute
+    #     raise '.execute(*args) method is not defined'
+    # end
 
     private
     def validate

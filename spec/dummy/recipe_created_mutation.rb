@@ -1,4 +1,6 @@
-require_relative './base'
+#require_relative './base'
+require "bundler/setup"
+require_relative "../../lib/mutant"
 
 class RecipeCreatedMutation
   include Mutant

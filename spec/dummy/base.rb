@@ -1,6 +1,21 @@
 gem 'byebug'
 require 'byebug'
 
+module Mutant
+  class Output
+    attr_reader :success, :errors, :payload
+    attr_writer :payload
+
+    def initialize(success, errors)
+      @success = success
+      @errors = errors
+    end
+
+    def success?
+      @success
+    end
+  end
+end
 
 module Mutant
   def self.included(klass)
@@ -45,6 +60,7 @@ module Mutant
       end
 
       obj.execute(args)
+      Output.new(true, {})
     end
   end
 
