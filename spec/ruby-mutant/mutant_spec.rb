@@ -1,23 +1,8 @@
 require "mutant"
+require "mutant_spec_helper"
 
-class RecipeBrokenMutation
-include Mutant
-end
-
-class RecipeCreatedEmptyMutation
-  include Mutant
-  def execute(*args)
-
-  end
-end
-
-class RecipeCreatedMutation
-  include Mutant
-  attr_accessor :first, :second
-
-  def execute(*args)
-    output.add_meta(:test, 'value')
-  end
+RSpec.configure do |c|
+  c.include MutantHelpers
 end
 
 RSpec.describe Mutant do
@@ -32,7 +17,7 @@ RSpec.describe Mutant do
   end
 
   describe "An empty mutation" do
-    let(:output) { RecipeCreatedEmptyMutation.run() }
+    let(:output) { MutantHelpers::RecipeCreatedEmptyMutation.run() }
 
     context "can still execute with no data" do
       it "should pass successfully with no data and return an output object" do
@@ -43,7 +28,7 @@ RSpec.describe Mutant do
   end
 
   describe "A mutatation - " do
-    let(:output) {RecipeCreatedMutation.run() }
+    let(:output) {MutantHelpers::RecipeCreatedMutation.run() }
 
     context "is a valid mutation -" do
       it "should set the values of the class mutation based on the props supplied to run()" do
@@ -64,7 +49,7 @@ RSpec.describe Mutant do
 
     context "an invalid mutation" do
       it "should raise an error if execute is missing" do
-        expect { raise RecipeBrokenMutation.run() }.to raise_error(MutationSetupException)
+        expect { raise MutantHelpers::RecipeBrokenMutation.run() }.to raise_error(MutationSetupException)
       end
 
       it "should fail if not all required properties are present" do
@@ -74,7 +59,7 @@ RSpec.describe Mutant do
   end
 
   describe "A mutation with input parameters" do
-    let(:output) { RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
+    let(:output) { MutantHelpers::RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
   end
 
   # it "should pass if all required properties are present" do
