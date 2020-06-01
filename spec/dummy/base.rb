@@ -1,5 +1,3 @@
-
-
 gem 'byebug'
 require 'byebug'
 
@@ -11,30 +9,38 @@ module Mutant
   end
 
   module ClassMethods
-
     # run - The entry point, main method that will be execute any
     # mutation logic
     def run(args)
       puts 'Mutant::self.run(*args) '
       obj = new(args)
+
+      # 1. We want to run the validators first, then determine if we should continue
       obj.send(:validate)
 
-      # set the vars to the obj dynamically
-      args.each do |k, v|
+      # 2. Check to see the mutation has the corresponding inst vars
+      args.each do |k, val|
         puts "Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
 
         # First make sure this mutation obj has the correct vars,
         # if not, then proceeed to create them
         unless obj.respond_to? k.to_sym
           puts 'Mutant: object does not have attribute'
-          obj.instance_variable_set("@#{k.to_sym}", v)
-          byebug
+          # create the attr_accessor for the missing vars
+          obj.class.send(:define_method, "#{k}=".to_sym) do |value|
+            instance_variable_set("@" + k.to_s, value)
+          end
+          obj.class.send(:define_method, k.to_sym) do
+            instance_variable_get("@" + k.to_s)
+          end
           puts "FINAL Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
         end
 
+        # 3. Propagate the values from the mutation props to the class
+        obj.send("#{k}=".to_sym, val)
       end
 
-        obj.execute(args)
+      obj.execute(args)
     end
   end
 
@@ -50,5 +56,6 @@ module Mutant
   def validate
     puts 'Mutant::validate'
   end
+
 
 end

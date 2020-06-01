@@ -5,13 +5,6 @@ class RecipeCreatedMutation
 
   attr_accessor :name, :recipe, :max_difficulty
 
-  name = 'inside class defined'
-
-
-  # def initialize(*args)
-  #   puts 'class init'
-  # end
-
   # required do
   #   {
   #       name: String,
@@ -19,7 +12,6 @@ class RecipeCreatedMutation
   #       product: Product
   #   }
   # end
-
 
   def validate_name?
     puts 'I AM VALIDATE NAME'
@@ -35,6 +27,5 @@ class RecipeCreatedMutation
 
     # Do other logic
 
-    @output
   end
 end

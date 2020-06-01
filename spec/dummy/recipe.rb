@@ -1,4 +1,5 @@
 class Recipe
+  attr_accessor :name, :style, :difficulty
   def initialize(name, style, difficulty)
       @name = name
       @style = style
