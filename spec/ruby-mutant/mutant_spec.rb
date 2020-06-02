@@ -83,20 +83,7 @@ RSpec.describe Mutant do
     end
   end
 
-  # describe "A mutation with input parameters" do
-  #   let(:output) { MutantHelpers::RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
-  # end
-
-  # it "should pass if all required properties are present" do
-  #   output = ProductCreatedMutation.run(name: 'Beer Bottle', code: '02AM4D', number: 1)
-  #   expect(output).to_not be_nil
-  #   expect(output.success?).to eq(true)
-  #   expect(output.payload).to eq('Beer Bottle.02AM4D')
-  # end
-
-  # it "should validate that all properties are of the correct type" do
-  #   expect { raise ProductCreatedMutation.run(name: 'Beer Bottle', code: '02AM4D', number: 'AA') }.to raise_error(MutationValidationException)
-  # end
-
-
+  describe "A mutation with input parameters" do
+    let(:output) { MutantHelpers::RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
+  end
 end
