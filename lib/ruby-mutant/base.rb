@@ -73,11 +73,15 @@ module Mutant
             end
 
             # 3 If this instance defines :required_attr
-            if obj.respond_to? :check_required_attrs
+            if obj.respond_to? :required_attr
                 required_attr_errors = obj.send(:check_required_attrs)
                 unless required_attr_errors.length == 0
                     # We need to handle any errors we get back from our
                     # required_attr validator
+                    obj.output.errors += required_attr_errors
+                    if args[:raise_on_error]
+                        raise required_attr_errors[0]
+                    end
                 end
             end
 
@@ -106,7 +110,7 @@ module Mutant
         self.public_methods.each do |m|
             #byebug
             if m.to_s.start_with?('validate_') && m.to_s.end_with?('?')
-                #execute method
+                #execute validation method
                 res = self.send(m)
 
                 # unless the response is truthy
@@ -125,13 +129,15 @@ module Mutant
         errors = []
         puts 'Mutant::check_required_attrs'
         self.required_attr.each do |attr|
-            if !defined?(attr)
+            #byebug
+            if !self.respond_to?(attr)
                 # Our attribute is not defined on our mutation class
                 # So we will build the error to return to the run()
                 # method, which can determine how we proceed
-                errors << MutationMissingRequiredVarException.new(
-                    msg="A property that is marked as required is not defined on the mutation: #{attr}",
-                    prop=attr)
+                err = MutationMissingRequiredVarException.new(
+                                    msg="A property that is marked as required is not defined on the mutation: #{attr}",
+                                    prop=attr)
+                errors << err
             end
         end
         errors

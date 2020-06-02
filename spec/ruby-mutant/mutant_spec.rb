@@ -30,7 +30,12 @@ RSpec.describe Mutant do
   describe "a mutation" do
     context "with raise_on_error=true" do
       it "should throws error if raise_on_error is true, or not set" do
-        expect { raise MutantHelpers::RecipeInvalidMutation.run(raise_on_error: true) }.to raise_error(MutationSetupException)
+        expect {  MutantHelpers::RecipeInvalidMutation.run(raise_on_error: true) }.to raise_error(MutationSetupException)
+      end
+
+      it "should throw an error if a required property is missing" do
+        expect {  MutantHelpers::RecipeCreatedMissingReqMutation.run(
+            raise_on_error: true, first: "1") }.to raise_error(MutationMissingRequiredVarException)
       end
     end
   end
@@ -49,7 +54,7 @@ RSpec.describe Mutant do
       end
 
       it "should not throw error if raise_on_error is false" do
-        expect { raise MutantHelpers::RecipeInvalidMutation.run(raise_on_error: false) }.to_not raise_error(MutationSetupException)
+        expect {  MutantHelpers::RecipeInvalidMutation.run(raise_on_error: false) }.to_not raise_error(MutationSetupException)
       end
 
       it "should execute validators and ensure they all return truthy" do
@@ -59,7 +64,7 @@ RSpec.describe Mutant do
 
     context "an invalid mutation" do
       it "should raise an error if execute is missing" do
-        expect { raise MutantHelpers::RecipeBrokenMutation.run() }.to raise_error(MutationSetupException)
+        expect { MutantHelpers::RecipeBrokenMutation.run() }.to raise_error(MutationSetupException)
       end
 
       it "should fail if not all required properties are present" do
@@ -68,9 +73,19 @@ RSpec.describe Mutant do
     end
   end
 
-  describe "A mutation with input parameters" do
-    let(:output) { MutantHelpers::RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
+  describe "A mutation with raise_on_error=false" do
+    let(:output) { MutantHelpers::RecipeCreatedMissingReqMutation.run(raise_on_error: false)}
+
+    context "it has missing required args but will not throw error" do
+      it "should have an error count in output of 1" do
+        expect(output.errors.length).to eq 1
+      end
+    end
   end
+
+  # describe "A mutation with input parameters" do
+  #   let(:output) { MutantHelpers::RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
+  # end
 
   # it "should pass if all required properties are present" do
   #   output = ProductCreatedMutation.run(name: 'Beer Bottle', code: '02AM4D', number: 1)
