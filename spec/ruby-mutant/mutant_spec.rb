@@ -54,7 +54,7 @@ RSpec.describe Mutant do
       end
 
       it "should not throw error if raise_on_error is false" do
-        expect {  MutantHelpers::RecipeInvalidMutation.run(raise_on_error: false) }.to_not raise_error(MutationSetupException)
+        expect {  MutantHelpers::RecipeInvalidMutation.run(raise_on_error: false) }.to_not raise_error
       end
 
       it "should execute validators and ensure they all return truthy" do
@@ -65,10 +65,6 @@ RSpec.describe Mutant do
     context "an invalid mutation" do
       it "should raise an error if execute is missing" do
         expect { MutantHelpers::RecipeBrokenMutation.run() }.to raise_error(MutationSetupException)
-      end
-
-      it "should fail if not all required properties are present" do
-        #expect { raise ProductCreatedMutation.run() }.to raise_error(MutationPropUndefined)
       end
     end
   end

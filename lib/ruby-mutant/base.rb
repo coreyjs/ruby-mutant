@@ -1,5 +1,3 @@
-require 'ruby-mutant/exceptions/mutation_duplicate_attr_exception'
-require 'ruby-mutant/exceptions/mutation_prop_undefined'
 require 'ruby-mutant/exceptions/mutation_validation_exception'
 require 'ruby-mutant/exceptions/mutation_setup_exception'
 require 'ruby-mutant/exceptions/mutation_missing_required_var_exception'
