@@ -25,17 +25,21 @@ module MutantHelpers
     end
   end
 
-    class RecipeInvalidMutation
-      include Mutant
-      attr_accessor :first, :second
+  class RecipeInvalidMutation
+    include Mutant
+    attr_accessor :first, :second
 
-      def validate_true?
-        'abc' == 'xyz'
-      end
-
-      def execute(args)
-        output.add_meta(:test, 'value')
-      end
+    def validate_false?
+      'abc' == 'xyz'
     end
+
+    def validate_true?
+      true
+    end
+
+    def execute(args)
+      output.add_meta(:test, 'value')
+    end
+  end
 
 end
