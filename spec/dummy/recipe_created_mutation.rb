@@ -7,6 +7,8 @@ class RecipeCreatedMutation
   include Mutant
 
   attr_accessor :name, :recipe, :max_difficulty
+  required_attr :first, :second, :third
+
 
 
   def validate_name?

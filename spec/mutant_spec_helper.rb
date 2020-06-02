@@ -15,6 +15,7 @@ module MutantHelpers
   class RecipeCreatedMutation
     include Mutant
     attr_accessor :first, :second
+    required_attr :first, :second, :third
 
     def validate_true?
       true

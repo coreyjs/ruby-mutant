@@ -2,8 +2,10 @@ require 'ruby-mutant/exceptions/mutation_duplicate_attr_exception'
 require 'ruby-mutant/exceptions/mutation_prop_undefined'
 require 'ruby-mutant/exceptions/mutation_validation_exception'
 require 'ruby-mutant/exceptions/mutation_setup_exception'
+require 'ruby-mutant/exceptions/mutation_missing_required_var_exception'
 require 'ruby-mutant/output'
 require "bundler/setup"
+require 'byebug'
 
 
 module Mutant
@@ -14,6 +16,14 @@ module Mutant
     end
 
     module ClassMethods
+        def required_attr(*attrs)
+            puts 'Mutant::required_attr'
+            # This defines a method called required_attr that will
+            # return an array of symbols for all the properties of the
+            # mutation that we should have defined.
+            define_method(:required_attr) { attrs ||= [] }
+        end
+
         # run - The entry point, main method that will be execute any
         # mutation logic
         def run(args = {})
@@ -62,13 +72,24 @@ module Mutant
                 obj.send("#{k}=".to_sym, val)
             end
 
-            obj.execute(args)
+            # 3 If this instance defines :required_attr
+            if obj.respond_to? :check_required_attrs
+                required_attr_errors = obj.send(:check_required_attrs)
+                unless required_attr_errors.length == 0
+                    # We need to handle any errors we get back from our
+                    # required_attr validator
+                end
+            end
 
+            # 4. Run execute method to run mutation logic
+            obj.execute(args)
             # Return out Output obj, with all meta data regarding the ran mutation
             obj.output
         end
     end
 
+
+    # instance methods
     def initialize(*args)
         puts 'Mutant::initialize'
         @output = Output.new
@@ -92,6 +113,25 @@ module Mutant
                 unless res
                     errors << MutationValidationException.new(msg='Validator has returned false', validator=m)
                 end
+            end
+        end
+        errors
+    end
+
+    def check_required_attrs
+        # In this we need to compare what we define in
+        # required_attr(*attrs) against what we have defined in
+        # the mutation vs what we pass into the run() definition
+        errors = []
+        puts 'Mutant::check_required_attrs'
+        self.required_attr.each do |attr|
+            if !defined?(attr)
+                # Our attribute is not defined on our mutation class
+                # So we will build the error to return to the run()
+                # method, which can determine how we proceed
+                errors << MutationMissingRequiredVarException.new(
+                    msg="A property that is marked as required is not defined on the mutation: #{attr}",
+                    prop=attr)
             end
         end
         errors
