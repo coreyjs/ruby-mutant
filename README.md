@@ -1,4 +1,4 @@
-# RubyMutant (master is deprecated, new release coming 6/2020)
+# RubyMutant
 [![Build Status](https://travis-ci.org/coreyjs/ruby-mutant.svg?branch=master)](https://travis-ci.org/coreyjs/ruby-mutant)
 
 
@@ -23,6 +23,8 @@ require "mutant"
 
 class RecipeCreatedMutation
   include Mutant
+  
+  required_attr :recipe
 
     #Define custom validators for our attributes
     def validate_name?
