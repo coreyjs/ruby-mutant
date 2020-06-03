@@ -1,23 +1,8 @@
 require "mutant"
+require "mutant_spec_helper"
 
-class ProductCreatedEmptyMutation < Mutant::MutantBase
-end
-
-class ProductCreatedMutation < Mutant::MutantBase
-  required do 
-    {
-      name: String,
-      code: String,
-      number: Integer
-    }
-  end
-
-  def self.run(*args)
-    super
-    input = args[0].to_h
-    @output.payload = "#{input[:name]}.#{input[:code]}"
-    @output
-  end
+RSpec.configure do |c|
+  c.include MutantHelpers
 end
 
 RSpec.describe Mutant do
@@ -25,30 +10,76 @@ RSpec.describe Mutant do
     
   end
 
-  it "has a version number" do
-    expect(Mutant::VERSION).not_to be nil
+  describe "core gem" do
+    it "has a version number" do
+      expect(Mutant::VERSION).not_to be nil
+    end
   end
 
-  it "should pass successfully with no data" do
-    output = ProductCreatedEmptyMutation.run()
-    expect(output).to_not be_nil
-    expect(output.success?).to eq(true)
+  describe "An empty mutation" do
+    let(:output) { MutantHelpers::RecipeCreatedEmptyMutation.run() }
+
+    context "can still execute with no data" do
+      it "should pass successfully with no data and return an output object" do
+        expect(output).to_not be_nil
+        expect(output.success?).to eq(true)
+      end
+    end
   end
 
-  it "should fail if not all required properties are present" do
-    expect { raise ProductCreatedMutation.run() }.to raise_error(MutationPropUndefined)
+  describe "a mutation" do
+    context "with raise_on_error=true" do
+      it "should throws error if raise_on_error is true, or not set" do
+        expect {  MutantHelpers::RecipeInvalidMutation.run(raise_on_error: true) }.to raise_error(MutationSetupException)
+      end
+
+      it "should throw an error if a required property is missing" do
+        expect {  MutantHelpers::RecipeCreatedMissingReqMutation.run(
+            raise_on_error: true, first: "1") }.to raise_error(MutationMissingRequiredVarException)
+      end
+    end
   end
 
-  it "should pass if all required properties are present" do
-    output = ProductCreatedMutation.run(name: 'Beer Bottle', code: '02AM4D', number: 1)
-    expect(output).to_not be_nil
-    expect(output.success?).to eq(true)
-    expect(output.payload).to eq('Beer Bottle.02AM4D')
+  describe "A mutatation with raise_on_error=false" do
+    let(:output) {MutantHelpers::RecipeCreatedMutation.run(raise_on_error: false) }
+
+    context "is a valid mutation -" do
+      it "should set the values of the class mutation based on the props supplied to run()" do
+        expect(output).to_not be_nil
+        expect(output.meta).to_not be_nil
+        expect(output.meta[:test]).to eq 'value'
+      end
+
+      it "should create accessors for properties defined in run() that are missing on class definition" do
+      end
+
+      it "should not throw error if raise_on_error is false" do
+        expect {  MutantHelpers::RecipeInvalidMutation.run(raise_on_error: false) }.to_not raise_error
+      end
+
+      it "should execute validators and ensure they all return truthy" do
+        expect(output.errors.length).to eq 0
+      end
+    end
+
+    context "an invalid mutation" do
+      it "should raise an error if execute is missing" do
+        expect { MutantHelpers::RecipeBrokenMutation.run() }.to raise_error(MutationSetupException)
+      end
+    end
   end
 
-  it "should validate that all properties are of the correct type" do    
-    expect { raise ProductCreatedMutation.run(name: 'Beer Bottle', code: '02AM4D', number: 'AA') }.to raise_error(MutationValidationException)
+  describe "A mutation with raise_on_error=false" do
+    let(:output) { MutantHelpers::RecipeCreatedMissingReqMutation.run(raise_on_error: false)}
+
+    context "it has missing required args but will not throw error" do
+      it "should have an error count in output of 1" do
+        expect(output.errors.length).to eq 1
+      end
+    end
   end
 
-
+  describe "A mutation with input parameters" do
+    let(:output) { MutantHelpers::RecipeCreatedMutation.run(name: 'Corey', skill_level: 100) }
+  end
 end
