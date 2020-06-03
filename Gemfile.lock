@@ -26,7 +26,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.17)
+  bundler (~> 1.16)
   rake (~> 13.0)
   rspec (~> 3.0)
   ruby-mutant!
