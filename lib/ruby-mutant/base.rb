@@ -3,7 +3,6 @@ require 'ruby-mutant/exceptions/mutation_setup_exception'
 require 'ruby-mutant/exceptions/mutation_missing_required_var_exception'
 require 'ruby-mutant/output'
 require "bundler/setup"
-require 'byebug'
 
 
 module Mutant
@@ -22,10 +21,17 @@ module Mutant
             define_method(:required_attr) { attrs ||= [] }
         end
 
-        # run - The entry point, main method that will be execute any
-        # mutation logic
+        # The entry point, main method that will be execute any mutation logic
+        #
+        # == Parameters:
+        # args::
+        #   A hash of inputs suppplied when the user runs the mutation.
+        #   i.e. MyMutation.run(name: 'jon', house: 'stark')
+        #
+        # == Returns:
+        #   An instance of `Mutant::Output`.  This object defines all
+        #   errors, metadata and success definition of the mutation
         def run(args = {})
-            errors = []
             unless args.has_key?(:raise_on_error)
                 args[:raise_on_error] = true
             end
@@ -55,7 +61,6 @@ module Mutant
                 # First make sure this mutation obj has the correct vars,
                 # if not, then proceeed to create them
                 unless obj.respond_to? k.to_sym
-                    puts 'Mutant: object does not have attribute'
                     # create the attr_accessor for the missing vars
                     obj.class.send(:define_method, "#{k}=".to_sym) do |value|
                         instance_variable_set("@" + k.to_s, value)
@@ -63,7 +68,6 @@ module Mutant
                     obj.class.send(:define_method, k.to_sym) do
                         instance_variable_get("@" + k.to_s)
                     end
-                    puts "FINAL Mutant::var check '#{k}', responds? #{obj.respond_to? k.to_sym}"
                 end
 
                 # 3. Propagate the values from the mutation props to the class
@@ -90,25 +94,25 @@ module Mutant
         end
     end
 
-
-    # instance methods
     def initialize(*args)
-        puts 'Mutant::initialize'
         @output = Output.new
     end
 
     private
-    # validate
-    # This will run all ou validation functions on our mutation class
-    #
+
+    # This will run all ou validation functions on our mutation class.
     # This will return an array of MutationValidationException, to the class method, run()
+    #
+    # == Parameters:
+    #
+    # == Returns:
+    #  errors.  An array of errors representing all validation methods that have failed.
+    # (defaults to `[]`)
     def validate
-        puts 'Mutant::validate'
         errors = []
         self.public_methods.each do |m|
-            #byebug
             if m.to_s.start_with?('validate_') && m.to_s.end_with?('?')
-                #execute validation method
+                # execute validation method
                 res = self.send(m)
 
                 # unless the response is truthy
@@ -120,6 +124,15 @@ module Mutant
         errors
     end
 
+    # Checks to see if any `required_attr` has been set, if so check to see if each one
+    # is defined in either the .run() definition or the mutation's `attr_accesor`.
+    # TODO need to also check that these required attributes have values
+    #
+    # == Parameters:
+    #
+    # == Returns:
+    # An array of errors, of type `MutationMissingRequiredVarException`, for each
+    # missing required attribute.
     def check_required_attrs
         # In this we need to compare what we define in
         # required_attr(*attrs) against what we have defined in
@@ -127,7 +140,6 @@ module Mutant
         errors = []
         puts 'Mutant::check_required_attrs'
         self.required_attr.each do |attr|
-            #byebug
             if !self.respond_to?(attr)
                 # Our attribute is not defined on our mutation class
                 # So we will build the error to return to the run()
