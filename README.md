@@ -2,7 +2,6 @@
 [![Build Status](https://travis-ci.org/coreyjs/ruby-mutant.svg?branch=master)](https://travis-ci.org/coreyjs/ruby-mutant)
 
 
-
 ## Installation
 
 
@@ -77,6 +76,59 @@ output.errors # >>  [err1, err1, ...]
 output.meta # > {:my => 'value', :other => 'value1'}
 ```
 
+---
+## How to use this library
+
+### Rails:
+We could define a folder structure such as this, for our rails Recipe web app:
+```
+/lib/use_cases/recipes/recipe_created_mutation.rb
+/lib/use_cases/user/new_user_signed_up_mutation.rb
+```
+
+`recipe_created_mutation.rb`
+```ruby
+require 'mutant'
+
+module UseCases::Recipes
+  class RecipeCreatedMutation
+    include Mutant
+
+    required_attr :recipe
+
+    def execute(args)
+      if recipe.name.blank?
+        puts 'whoops this recipe is bad'
+      end
+    end
+  end
+
+end
+```
+
+And in a controller, we can execute the mutation like so:
+
+```ruby
+class RecipesController < ApplicationController
+  include UseCases::Recipes
+
+ 
+    def create
+        @recipe = Recipe.new(recipe_params)
+        
+        output = RecipeCreatedMutation.run(recipe: @recipe)
+    
+        if output.success?
+          puts 'everything went super duper good'
+        end
+      end 
+
+...
+end
+```
+
+
+---
 
 ---
 ## How should I use mutations?
