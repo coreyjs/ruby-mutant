@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-mutant (0.0.3)
+    ruby-mutant (0.0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -26,7 +26,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.16)
+  bundler (~> 1.17)
   rake (~> 13.0)
   rspec (~> 3.0)
   ruby-mutant!
