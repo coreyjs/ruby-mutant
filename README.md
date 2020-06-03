@@ -2,7 +2,6 @@
 [![Build Status](https://travis-ci.org/coreyjs/ruby-mutant.svg?branch=master)](https://travis-ci.org/coreyjs/ruby-mutant)
 
 
-
 ## Installation
 
 
