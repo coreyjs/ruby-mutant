@@ -45,7 +45,7 @@ end
 To run a mutation definition:
 ```ruby
 # run() excepts any number of parameters that you want to pass into your mutation
-output = RecipeCreatedMutation.run(obj: obj1, obj2: obj2, ....)
+output = RecipeCreatedMutation.run(recipe: Recipe.new, obj2: obj2, ....)
 ```
 
 Every mutation execution will return an `output` object.  This object contains information on the
@@ -72,11 +72,14 @@ output.meta[:test] # >> 'value'
 
 ```ruby
 output = RecipeCreatedMutation.run(obj: obj1)
-output.success?
-output.errors
-output.meta
+output.success? # >> true
+output.errors # >>  [err1, err1, ...]
+output.meta # > {:my => 'value', :other => 'value1'}
 ```
 
+
+---
+## How should I use mutations?
 
 
 ## Contributing
