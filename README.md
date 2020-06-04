@@ -130,13 +130,12 @@ end
 
 ---
 
----
-## How should I use mutations?
-
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/coreyjs/ruby-mutant. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+For more information on contributing, here:  [How To Contribute](https://github.com/coreyjs/ruby-mutant/blob/master/CONTRIBUTING.md)
 
 ## License
 
