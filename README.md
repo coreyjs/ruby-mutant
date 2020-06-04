@@ -6,7 +6,7 @@
 
 
 ```ruby
-gem 'ruby-mutant'
+gem 'ruby-mutant', git: 'https://github.com/coreyjs/ruby-mutant'
 ```
 
 
