@@ -19,8 +19,8 @@ RSpec.describe Mutant do
   describe "An empty mutation" do
     let(:output) { MutantHelpers::RecipeCreatedEmptyMutation.run() }
 
-    context "can still execute with no data" do
-      it "should pass successfully with no data and return an output object" do
+    context 'can still execute with no data' do
+      it 'should pass successfully with no data and return an output object' do
         expect(output).to_not be_nil
         expect(output.success?).to eq(true)
       end
