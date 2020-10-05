@@ -1,4 +1,4 @@
-# RubyMutant
+# Ruby Mutant
 [![Build Status](https://travis-ci.org/coreyjs/ruby-mutant.svg?branch=master)](https://travis-ci.org/coreyjs/ruby-mutant)
 
 
@@ -15,6 +15,7 @@ gem 'ruby-mutant', git: 'https://github.com/coreyjs/ruby-mutant'
 Ruby Mutant is a lightweight mutations library to help you encapsulate your business logic.  With Ruby Mutant you can easily add executable code with validation, helping you decouple important logic from your application.
 
 To create a mutation from a ruby object, include the module `include Mutatant`  
+
 
 
 ```ruby
