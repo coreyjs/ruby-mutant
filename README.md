@@ -12,7 +12,7 @@ gem 'ruby-mutant', git: 'https://github.com/coreyjs/ruby-mutant'
 
 ## Usage
 
-Ruby Mutant is a lightweight mutations library to help you encapsulate your business logic.  With Ruby Mutant you can easily add executable code with validation, helping you decouple important logic from your application.
+Ruby Mutant is a lightweight mutations library to help you encapsulate your business logic into decoupled, testable mutations.  With Ruby Mutant you can easily add executable code with validation, helping you decouple important logic from your application.
 
 To create a mutation from a ruby object, include the ruby module `require "mutatant"`  
 
