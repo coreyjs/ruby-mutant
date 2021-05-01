@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-mutant (1.0.0)
+    ruby-mutant (1.0.1)
 
 GEM
   remote: https://rubygems.org/
