@@ -6,7 +6,7 @@
 
 
 ```ruby
-gem 'ruby-mutant', '~> 1.0'
+gem 'ruby-mutant', '~> 1.0.0'
 ```
 
 ---
