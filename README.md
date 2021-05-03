@@ -1,5 +1,6 @@
 # Ruby Mutant
-[![Build Status](https://travis-ci.org/coreyjs/ruby-mutant.svg?branch=master)](https://travis-ci.org/coreyjs/ruby-mutant)
+[![Build Status](https://travis-ci.org/coreyjs/ruby-mutant.svg?branch=master)](https://travis-ci.org/coreyjs/ruby-mutant) 
+[![Gem Version](https://badge.fury.io/rb/ruby-mutant.svg)](https://badge.fury.io/rb/ruby-mutant)
 
 
 ## Installation
