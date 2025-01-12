@@ -29,7 +29,7 @@ class RecipeCreatedMutation
 
     #Define custom validators for our attributes
     def validate_name?
-        string.nil? || string.empty?
+        name.nil? || name.empty?
     end
 
     # Required, this will execute our new mutation.
