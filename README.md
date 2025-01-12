@@ -15,7 +15,7 @@ gem 'ruby-mutant', '~> 1.0.1'
 
 Ruby Mutant is a lightweight mutations library to help you encapsulate your business logic into decoupled, testable mutations.  With Ruby Mutant you can easily add executable code with validation, helping you decouple important logic from your application.
 
-To create a mutation from a ruby object, include the ruby module `require "mutatant"`  
+To create a mutation from a ruby object, include the ruby module `require "mutant"`  
 
 
 
